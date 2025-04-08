@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Novo Cadastro{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+<!-- Biblioteca para máscaras -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+{% endblock %}
+
+{% block content %}
+
+  <div class="w-full text-center">
+
+
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert {{message.tags}}">
+            {{message}}
+        </div>
+    {% endfor %}
+    {% endif %}
+
+      <!-- Card de Cadastro -->
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+          <!-- Cabeçalho -->
+          <div class="bg-blue-600 py-6 px-8 text-center">
+              <h1 class="text-2xl font-bold text-white">Crie sua conta</h1>
+              <p class="text-blue-100 mt-1">Preencha seus dados para se cadastrar</p>
+          </div>
+          
+          <!-- Formulário -->
+          <form class="p-8 space-y-6" action="{% url 'cadastrar' %}" method="post">{% csrf_token %}
+              <!-- Seção: Dados Básicos -->
+              <div class="border-b border-gray-200 pb-6">
+                  <h2 class="text-lg font-medium text-gray-900 mb-4">Dados Básicos</h2>
+                  
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <!-- Email -->
+                      <div>
+                          <label for="email" class="block text-sm font-medium text-gray-700">E-mail <span style="color: red;">*</span></label>
+                          <div class="mt-1 relative rounded-md shadow-sm">
+                              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                  <i class="fas fa-envelope text-gray-400"></i>
+                              </div>
+                              <input type="email" id="email" name="email" required
+                                  class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                  placeholder="seu@email.com">
+                          </div>
+                      </div>
+                      
+                      <!-- Username -->
+                      <div>
+                          <label for="username" class="block text-sm font-medium text-gray-700">Nome de Usuario <span style="color: red;">*</span></label>
+                          <div class="mt-1 relative rounded-md shadow-sm">
+                              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                  <i class="fas fa-user text-gray-400"></i>
+                              </div>
+                              <input type="text" id="first_name" name="first_name" required
+                                  class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                  placeholder="@NomeUsuario">
+                          </div>
+                      </div>
+                      
+                      <!-- Senha -->
+                      <div>
+                          <label for="password1" class="block text-sm font-medium text-gray-700">Senha <span style="color: red;">*</span></label>
+                          <div class="mt-1 relative rounded-md shadow-sm">
+                              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                  <i class="fas fa-lock text-gray-400"></i>
+                              </div>
+                              <input type="password" id="password" name="password" required
+                                  class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                  placeholder="••••••••">
+                          </div>
+                      </div>
+                      
+                      <!-- Confirmação de Senha -->
+                      <div>
+                          <label for="password2" class="block text-sm font-medium text-gray-700">Confirme a Senha <span style="color: red;">*</span></label>
+                          <div class="mt-1 relative rounded-md shadow-sm">
+                              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                  <i class="fas fa-lock text-gray-400"></i>
+                              </div>
+                              <input type="password" id="confirm-password" name="confirm-password" required
+                                  class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                  placeholder="••••••••">
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              
+              <!-- Seção: Dados Pessoais -->
+              <div class="border-b border-gray-200 pb-6">
+                  <h2 class="text-lg font-medium text-gray-900 mb-4">Dados Pessoais</h2>
+                  
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <!-- CPF -->
+                      <div>
+                          <label for="cpf" class="block text-sm font-medium text-gray-700">CPF <span style="color: red;">*</span></label>
+                          <div class="mt-1 relative rounded-md shadow-sm">
+                              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                  <i class="fas fa-id-card text-gray-400"></i>
+                              </div>
+                              <input type="text" id="cpf" name="cpf" required
+                                  class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                  placeholder="000.000.000-00">
+                          </div>
+                      </div>
+                      
+                      <!-- Data de Nascimento -->
+                      <div>
+                          <label for="data_nascimento" class="block text-sm font-medium text-gray-700">Data de Nascimento</label>
+                          <div class="mt-1 relative rounded-md shadow-sm">
+                              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                  <i class="fas fa-calendar text-gray-400"></i>
+                              </div>
+                              <input type="date" id="data_nascimento" name="data_nascimento" datepicker-format="dd-mm-yyyy"
+                                  class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                          </div>
+                      </div>
+                      
+                      <!-- Telefone -->
+                      <div>
+                          <label for="telefone" class="block text-sm font-medium text-gray-700">Telefone <span style="color: red;">*</span></label>
+                          <div class="mt-1 relative rounded-md shadow-sm">
+                              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                  <i class="fas fa-phone text-gray-400"></i>
+                              </div>
+                              <input type="text" id="telefone" name="telefone" required
+                                  class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                  placeholder="(00) 00000-0000">
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              
+              <!-- Seção: Temas de Interesse -->
+              <div class="border-b border-gray-200 pb-6">
+                  <h2 class="text-lg font-medium text-gray-900 mb-4">Temas de Interesse</h2>
+                  
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div class="flex items-center">
+                          <input type="checkbox" id="inss" name="temas_interesse" value="INSS"
+                              class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                          <label for="inss" class="ml-2 block text-sm text-gray-700">Previdência Social (INSS)</label>
+                      </div>
+                      
+                      <div class="flex items-center">
+                          <input type="checkbox" id="trabalhista" name="temas_interesse" value="TRABALHISTA"
+                              class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                          <label for="trabalhista" class="ml-2 block text-sm text-gray-700">Direito Trabalhista</label>
+                      </div>
+                      
+                      <div class="flex items-center">
+                          <input type="checkbox" id="consumidor" name="temas_interesse" value="CONSUMIDOR"
+                              class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                          <label for="consumidor" class="ml-2 block text-sm text-gray-700">Direito do Consumidor</label>
+                      </div>
+                      
+                      <div class="flex items-center">
+                          <input type="checkbox" id="familia" name="temas_interesse" value="FAMILIA"
+                              class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                          <label for="familia" class="ml-2 block text-sm text-gray-700">Direito de Família</label>
+                      </div>
+                  </div>
+              </div>
+              
+              <!-- Seção: Consentimentos -->
+              <div class="space-y-4">
+                  <h2 class="text-lg font-medium text-gray-900">Consentimentos</h2>
+                  
+                  <div class="flex items-start">
+                      <div class="flex items-center h-5">
+                          <input type="checkbox" id="contato_advogado" name="consentimento_contato_advogado" required
+                              class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                      </div>
+                      <div class="ml-3">
+                          <label for="contato_advogado" class="block text-sm text-gray-700">
+                             Autorizo o contato por advogados parceiros para assuntos relacionados aos meus interesses <span style="color: red;">*</span>
+                          </label>
+                      </div>
+                  </div>
+                  
+                  <div class="flex items-start">
+                      <div class="flex items-center h-5">
+                          <input type="checkbox" id="analise_dados" name="consentimento_analise_dados" required
+                              class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                      </div>
+                      <div class="ml-3">
+                          <label for="analise_dados" class="block text-sm text-gray-700" >
+                              Autorizo o uso dos meus dados para melhoria do serviço e personalização de conteúdo <span style="color: red;">*</span>
+                          </label>
+                      </div>
+                  </div>
+              </div>
+              
+              <!-- Botão de Cadastro -->
+              <div class="pt-4">
+                  <input type="submit"
+                      class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                      value="Cadastrar">
+                  
+              </div>
+          </form>
+          
+          <!-- Rodapé -->
+          <div class="bg-gray-50 px-8 py-4 text-center">
+              <p class="text-sm text-gray-600">
+                  Já tem uma conta? 
+                  <a href="{% url 'logar' %}" class="font-medium text-blue-600 hover:text-blue-500">Faça login</a>
+              </p>
+          </div>
+      </div>
+  </div>
+
+  <!-- Script para máscaras -->
+  <script>
+      $(document).ready(function(){
+          $('#cpf').mask('000.000.000-00', {reverse: true});
+          $('#telefone').mask('(00) 00000-0000');
+      });
+  </script>
+{% endblock%}
+
