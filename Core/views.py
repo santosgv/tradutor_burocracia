@@ -20,6 +20,7 @@ def contact(request):
 
 client = OpenAI(api_key=settings.OPENAI_API_KEY)
 
+
 @login_required
 def get_termos_juridicos(request):
     termos = TermoJuridico.objects.filter(usuario=request.user).order_by('-data_busca')[:20]

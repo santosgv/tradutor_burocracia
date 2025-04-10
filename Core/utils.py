@@ -2,12 +2,14 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.http import JsonResponse
-import openai
+from openai import OpenAI
 
 from Autenticacao.models import Usuario
 from .models import TermoJuridico
 from datetime import datetime
 import random
+
+client = OpenAI(api_key=settings.OPENAI_API_KEY)
 
 class MockOpenAIResponse:
     def __init__(self):
@@ -78,7 +80,16 @@ def chat_view_teste(request):
     if request.method == 'POST':
         user_message = request.POST.get('message', '')
 
-        response = openai.Completion.create = mock_openai_completion_create(
+
+        termo_existente = TermoJuridico.objects.filter(
+            usuario=request.user,
+            termo_buscado__icontains=user_message  # busca exata ignorando case
+        ).first()
+
+        if termo_existente:
+            return JsonResponse({'message': termo_existente.traducao})
+
+        response = client.chat.completions.create = mock_openai_completion_create(
             engine="text-davinci-003",
             messages=[
                 {"role": "system", "content": "Explique em linguagem simples para leigos esse trecho juridico. Use no máximo 100 caracteres."},
@@ -86,6 +97,7 @@ def chat_view_teste(request):
             ],
             max_tokens=150
         )
+
         
         ai_message = response.text
 
@@ -93,7 +105,7 @@ def chat_view_teste(request):
             usuario=request.user,
             termo_buscado=user_message,
             traducao=response.text,
-            lei_relacionada=response.choices[0]['metadata']['fontes'],
+            lei_relacionada=", ".join(response.choices[0]['metadata']['fontes']),
             tags=response.choices[0]['metadata']['tema']
         )
         pesquisa.save()
