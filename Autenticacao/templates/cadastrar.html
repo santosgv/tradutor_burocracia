@@ -65,17 +65,20 @@
                       </div>
                       
                       <!-- Senha -->
-                      <div>
-                          <label for="password1" class="block text-sm font-medium text-gray-700">Senha <span style="color: red;">*</span></label>
-                          <div class="mt-1 relative rounded-md shadow-sm">
-                              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                  <i class="fas fa-lock text-gray-400"></i>
-                              </div>
-                              <input type="password" id="password" name="password" required
-                                  class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                  placeholder="••••••••">
-                          </div>
-                      </div>
+                      <div class="mb-4">
+                        <label for="senha" class="block text-sm font-medium text-gray-700">Senha</label>
+                        <input type="password" name="senha" id="senha" required
+                               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                               oninput="validarForcaSenha(this.value)">
+                        <div id="requisitos-senha" class="text-xs text-gray-500 mt-1">
+                            <p>A senha deve conter:</p>
+                            <ul class="list-disc list-inside">
+                                <li id="req-tamanho">✓ Pelo menos 6 caracteres</li>
+                                <li id="req-maiuscula">✓ 1 letra maiúscula</li>
+                                <li id="req-especial">✓ 1 caractere especial</li>
+                            </ul>
+                        </div>
+                    </div>
                       
                       <!-- Confirmação de Senha -->
                       <div>
@@ -223,5 +226,14 @@
           $('#telefone').mask('(00) 00000-0000');
       });
   </script>
+
+<script>
+    function validarForcaSenha(senha) {
+        // Atualiza os requisitos visualmente
+        document.getElementById('req-tamanho').style.color = senha.length >= 6 ? 'green' : 'red';
+        document.getElementById('req-maiuscula').style.color = /[A-Z]/.test(senha) ? 'green' : 'red';
+        document.getElementById('req-especial').style.color = /[!@#$%^&*(),.?":{}|<>]/.test(senha) ? 'green' : 'red';
+    }
+    </script>
 {% endblock%}
 

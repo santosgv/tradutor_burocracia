@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from openai import OpenAI
 
-from Autenticacao.models import Usuario
+from Autenticacao.models import HistoricoConsumo, Usuario,SaldoCredito
 from .models import TermoJuridico
 from datetime import datetime
 import random
@@ -74,13 +74,15 @@ class MockOpenAIResponse:
 def mock_openai_completion_create(*args, **kwargs):
     return MockOpenAIResponse()
 
-
 @csrf_exempt
 def chat_view_teste(request):
     if request.method == 'POST':
         user_message = request.POST.get('message', '')
+        saldo = SaldoCredito.objects.filter(usuario=request.user).first()
 
-
+        if not saldo or saldo.creditos < 1:
+            return JsonResponse({'message': 'Créditos insuficientes, Faça uma nova recarga de créditos.'})
+        
         termo_existente = TermoJuridico.objects.filter(
             usuario=request.user,
             termo_buscado__icontains=user_message  # busca exata ignorando case
@@ -88,6 +90,8 @@ def chat_view_teste(request):
 
         if termo_existente:
             return JsonResponse({'message': termo_existente.traducao})
+        
+
 
         response = client.chat.completions.create = mock_openai_completion_create(
             engine="text-davinci-003",
@@ -101,6 +105,8 @@ def chat_view_teste(request):
         
         ai_message = response.text
 
+        saldo.consumir_credito(1)
+
         pesquisa = TermoJuridico.objects.create(
             usuario=request.user,
             termo_buscado=user_message,
@@ -112,5 +118,13 @@ def chat_view_teste(request):
         atualiza = Usuario.objects.get(id=request.user.id)
         atualiza.ultima_busca = datetime.now()
         atualiza.save()
-        return JsonResponse({'message': ai_message})
+
+        HistoricoConsumo.objects.create(
+        usuario=request.user,
+        termo=user_message,
+        creditos_usados=1
+        )
+
+        return JsonResponse({'message': ai_message,
+                             'novo_saldo': saldo.creditos})
     return render(request, 'resultado.html')

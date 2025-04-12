@@ -128,6 +128,8 @@ MESSAGE_TAGS = {
 }
 
 OPENAI_API_KEY=config('OPENAI_API_KEY')
+DEEP=config('DEEP')
+STRIPE_SECRET_KEY=config('STRIPE_SECRET_KEY_DEV')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

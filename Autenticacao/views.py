@@ -3,6 +3,26 @@ from django.contrib import messages
 from django.contrib.messages import constants
 from .models import Usuario
 from django.contrib import auth
+import re
+
+
+def validar_senha_forte(senha):
+    """
+    Valida se a senha atende aos requisitos:
+    - Mínimo 6 caracteres
+    - Pelo menos 1 letra maiúscula
+    - Pelo menos 1 caractere especial
+    """
+    if len(senha) < 6:
+        return False, "A senha deve ter pelo menos 6 caracteres"
+    
+    if not re.search(r'[A-Z]', senha):
+        return False, "A senha deve conter pelo menos 1 letra maiúscula"
+    
+    if not re.search(r'[!@#$%^&*(),.?":{}|<>]', senha):
+        return False, "A senha deve conter pelo menos 1 caractere especial"
+    
+    return True, ""
 
 def cadastrar(request):
     if request.method == "GET":
@@ -20,9 +40,6 @@ def cadastrar(request):
         confirmar_senha = request.POST.get('confirm-password')
         interesses = request.POST.getlist('temas_interesse')
 
-        print(first_name, cpf, data_nascimento, email, telefone, senha, confirmar_senha, interesses)
-
-        
 
         if not senha == confirmar_senha:
             messages.add_message(request, constants.ERROR, 'As senhas não coincidem')
@@ -32,6 +49,12 @@ def cadastrar(request):
             messages.add_message(request, constants.ERROR, 'Preencha todos os campos')
             return redirect('/auth/cadastrar')
         
+        senha_valida, msg_erro = validar_senha_forte(senha)
+        if not senha_valida:
+            messages.add_message(request, constants.ERROR, msg_erro)
+            return redirect('/auth/cadastrar')
+
+        
         user = Usuario.objects.filter(email=email)
         
         if user.exists():
@@ -39,7 +62,7 @@ def cadastrar(request):
             return redirect('/auth/cadastrar')
         
         try:
-            user = Usuario.objects.create_user(
+            Usuario.objects.create_user(
                                             username=first_name,
                                             data_nascimento=data_nascimento,
                                             cpf=cpf,
@@ -47,7 +70,7 @@ def cadastrar(request):
                                             email = email,
                                             telefone=telefone,
                                             password=senha)
-            user.save()
+            
 
             messages.add_message(request, constants.SUCCESS, 'Foi Enviado Para seu email o Link de ativaçao da sua conta')
             return redirect('/auth/logar')
