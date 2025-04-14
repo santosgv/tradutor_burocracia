@@ -36,10 +36,11 @@ def cadastrar(request):
         data_nascimento = request.POST.get('data_nascimento')
         email = request.POST.get('email')
         telefone = request.POST.get('telefone')
-        senha = request.POST.get('password')
+        senha = request.POST.get('senha')
         confirmar_senha = request.POST.get('confirm-password')
         interesses = request.POST.getlist('temas_interesse')
-
+        
+        print(senha,confirmar_senha)
 
         if not senha == confirmar_senha:
             messages.add_message(request, constants.ERROR, 'As senhas não coincidem')

@@ -7,9 +7,9 @@ from django.http import  HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from Autenticacao.models import  SaldoCredito, Usuario,Creditos
 from Core.models import TermoJuridico
-import stripe
+#import stripe
 
-stripe.api_key = settings.STRIPE_SECRET_KEY
+#stripe.api_key = settings.STRIPE_SECRET_KEY
 
 PLANOS = {
         10: {'preco': 9.90, 'creditos': 10, 'descricao': '10 créditos'},
