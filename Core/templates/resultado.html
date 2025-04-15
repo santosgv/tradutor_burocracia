@@ -105,6 +105,14 @@
   // Toggle da barra lateral em mobile
   document.getElementById('toggleHistory').addEventListener('click', () => {
     document.querySelector('.bg-white.border-r').classList.toggle('hidden');
+    const historyPanel = document.getElementById('mobile-history');
+    historyPanel.classList.remove('-translate');
+
+    setTimeout(() => {
+    const scrollContainer = historyPanel.querySelector('.overflow-y-auto');
+    scrollContainer.scrollTop = 0;
+  }, 300);
+
   });
 
   // Carrega o histórico do banco de dados ao iniciar
