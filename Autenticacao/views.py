@@ -39,8 +39,6 @@ def cadastrar(request):
         senha = request.POST.get('senha')
         confirmar_senha = request.POST.get('confirm-password')
         interesses = request.POST.getlist('temas_interesse')
-        
-        print(senha,confirmar_senha)
 
         if not senha == confirmar_senha:
             messages.add_message(request, constants.ERROR, 'As senhas não coincidem')
@@ -102,3 +100,16 @@ def logar(request):
 def sair(request):
     auth.logout(request)
     return redirect('/auth/logar')
+
+from django.contrib.auth.views import PasswordResetView
+from django.urls import reverse_lazy
+
+class CustomPasswordResetView(PasswordResetView):
+    template_name = 'registration/password_reset_form.html'
+    email_template_name = 'registration/password_reset_email.html'
+    subject_template_name = 'registration/password_reset_subject.txt'
+    success_url = reverse_lazy('password_reset_done')
+    
+    def form_valid(self, form):
+        # Adicione lógica personalizada aqui se necessário
+        return super().form_valid(form)
