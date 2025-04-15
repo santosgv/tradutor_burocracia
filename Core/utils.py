@@ -81,11 +81,13 @@ def chat_view_teste(request):
         saldo = SaldoCredito.objects.filter(usuario=request.user).first()
 
 
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         if not saldo or saldo.creditos < 1:
             return JsonResponse({
                 'status': 'error',
                 'message': 'Créditos insuficientes, Faça uma nova recarga de créditos.'
             }, status=402)
+
         
         termo_existente = TermoJuridico.objects.filter(
             usuario=request.user,
@@ -128,7 +130,7 @@ def chat_view_teste(request):
         termo=user_message,
         creditos_usados=1
         )
-
+        print(saldo.creditos)
         return JsonResponse({'message': ai_message,
                              'novo_saldo': saldo.creditos})
     return render(request, 'resultado.html')
